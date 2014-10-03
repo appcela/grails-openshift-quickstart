@@ -1,8 +1,12 @@
 #!/bin/bash
-source $OPENSHIFT_CARTRIDGE_SDK_BASH
-# The logic to stop your application should be put in this script.
-#it survived, try to kill java
-if [[ -n `ps -A | grep java` ]]; then
-	pkill -SIGTERM java
+
+# Ensure the previous startup succeeded and this actually exists.
+if [ -d "${OPENSHIFT_DATA_DIR}jetty" ]; then
+    cd ${OPENSHIFT_DATA_DIR}jetty
+
+    # Ensure the process is actually running.
+    if ps -p `cat jetty.pid` > /dev/null
+    then
+       kill `cat jetty.pid`
+    fi
 fi
-exit 0

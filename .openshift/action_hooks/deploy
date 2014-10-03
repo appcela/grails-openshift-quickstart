@@ -4,24 +4,44 @@
 # up again.  This script gets executed directly, so it could be python, php,
 # ruby, etc.
 set -x
-if [ ! -d $OPENSHIFT_DATA_DIR/jdk1.8.0_20 ]
+
+JAVA_VERSION="1.8.0_20"
+JETTY_VERSION="9.2.3.v20140905"
+MAVEN_VERSION="3.2.3"
+
+# Install JDK 8
+if [ ! -d $OPENSHIFT_DATA_DIR/jdk${JAVA_VERSION} ]
 	then 
 		cd $OPENSHIFT_DATA_DIR
-		wget http://www.java.net/download/jdk8u20/archive/b17/binaries/jdk-8u20-ea-bin-b17-linux-x64-04_jun_2014.tar.gz
+		wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u20-b26/jdk-8u20-linux-x64.tar.gz		
 		tar xvf *.tar.gz 
 		rm -f *.tar.gz
 fi
 
-if [ ! -d $OPENSHIFT_DATA_DIR/apache-maven-3.2.2 ]
+# Install Maven 3.x
+if [ ! -d $OPENSHIFT_DATA_DIR/apache-maven-${MAVEN_VERSION} ]
 	then 
 		cd $OPENSHIFT_DATA_DIR
-		wget http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz
+		wget http://mirror.cc.columbia.edu/pub/software/apache/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
 		tar xvf *.tar.gz 
 		rm -f *.tar.gz
 fi
 
-export M2=$OPENSHIFT_DATA_DIR/apache-maven-3.2.2/bin
-export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk1.8.0_20
+# Install Jetty 9
+if [ ! -d $OPENSHIFT_DATA_DIR/jetty ]
+	then 
+		cd $OPENSHIFT_DATA_DIR
+		curl -o jetty.tar.gz "http://download.eclipse.org/jetty/stable-9/dist/jetty-distribution-${JETTY_VERSION}.tar.gz"
+		tar xvf *.tar.gz 
+		rm -f *.tar.gz
+		mv jetty-distribution-${JETTY_VERSION}/ jetty
+		rm -rf jetty/contexts/*
+  		rm -rf jetty/webapps
+fi
+
+
+export M2=$OPENSHIFT_DATA_DIR/apache-maven-${MAVEN_VERSION}/bin
+export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk${JAVA_VERSION}
 export PATH=$JAVA_HOME/bin:$M2:$PATH
 
 cd $OPENSHIFT_REPO_DIR
