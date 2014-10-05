@@ -27,4 +27,3 @@ CMD="java -Xms384m -Xmx412m -jar start.jar -Djetty.host=$OPENSHIFT_DIY_IP -Djett
 nohup $CMD > $OPENSHIFT_LOG_DIR/server.log 2>&1 &
 
 echo $! > jetty.pid
-#java -jar diy/todoapp-1.0-SNAPSHOT.jar &

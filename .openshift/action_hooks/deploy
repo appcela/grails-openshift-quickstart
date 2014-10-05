@@ -44,5 +44,9 @@ export M2=$OPENSHIFT_DATA_DIR/apache-maven-${MAVEN_VERSION}/bin
 export JAVA_HOME=$OPENSHIFT_DATA_DIR/jdk${JAVA_VERSION}
 export PATH=$JAVA_HOME/bin:$M2:$PATH
 
-cd $OPENSHIFT_REPO_DIR
-mvn -s $OPENSHIFT_REPO_DIR/.openshift/settings.xml -q clean install
+# Build with Maven
+if [-f $OPENSHIFT_REPO_DIR/pom.xml]
+	then
+		cd $OPENSHIFT_REPO_DIR
+		mvn -s $OPENSHIFT_REPO_DIR/.openshift/settings.xml -q clean install
+fi
